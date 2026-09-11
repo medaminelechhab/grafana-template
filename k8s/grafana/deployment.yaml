@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - image:  dockerfactory-playground-iva.si.francetelecom.fr/grafana/grafana:7.2.1
+        name: grafana
+        #env:
+        #- name: GF_INSTALL_PLUGINS
+        #  value: grafana-piechart-panel,https://github.com/gipong/grafana-groupedbarchart-panel/archive/master.zip;grafana-groupedbarchart-panel
+        ports:
+        - containerPort: 3000
+          name: http
+        resources:
+          limits:
+            cpu: 500m
+            memory: 100Mi
+          requests:
+            cpu: 20m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: grafana-datasources
+          readOnly: false
+        - mountPath: /etc/grafana/provisioning/dashboards
+          name: grafana-dashboards
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prometheus-blackbox-exporter
+          name: prometheus-blackbox-exporter
+      securityContext:
+        fsGroup: 472
+      serviceAccountName: grafana
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      volumes:
+      - name: grafana-datasources
+        configMap:
+          name: grafana-datasources
+      - configMap:
+          name: grafana-dashboards
+        name: grafana-dashboards
+      - configMap:
+          name: prometheus-blackbox-exporter
+        name: prometheus-blackbox-exporter
+#     - configMap:
+#          name: blackbox-exporter-dashboards
+#        name: blackbox-exporter-dashboards
+      - name: grafana-storage
+        emptyDir: {}

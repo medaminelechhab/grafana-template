@@ -1,0 +1,17 @@
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: grafana
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    prometheus.io/probe: "true"
+spec:
+  rules:
+  - host: grafana.mediationplatform.caas-cnp-apps.com.intraMyProject
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: grafana
+          servicePort: 80

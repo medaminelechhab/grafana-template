@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMapList
+items:
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: grafana-datasources
+  data:
+    prometheus.yaml: |-
+      {
+          "apiVersion": 1,
+          "datasources": [
+             
+              {
+                  "access": "proxy",
+                  "editable": false,
+                  "name": "prometheus-uat",
+                  "orgId": 1,
+                  "type": "prometheus",
+                  "url": "http://prometheus.customerlinks-uat.caas-cnp-apps.com.intraMyProject",
+                  "version": 1
+              }, {
+                  "access": "proxy",
+                  "editable": false,
+                  "name": "prometheus-prod",
+                  "orgId": 1,
+                  "type": "prometheus",
+                  "url": "http://prometheus.customerlinks.caas-cnp-apps.com.intraMyProject",
+                  "version": 1
+              }
+          ]
+      }
